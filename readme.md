@@ -15,7 +15,7 @@ __Login__:
 - user: `root@partdp.com`
 - password: `123456`
 
-#Gitlab oauth
+# Gitlab oauth
 
 If you wanna use gitlab oauth login see below article
 
