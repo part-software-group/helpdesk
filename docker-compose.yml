@@ -13,7 +13,6 @@ services:
       - 8000:8000
     links:
       - helpdesk_postgres
-      - helpdesk_gitlab
     volumes:
       - $PWD:/app
     working_dir: /app
