@@ -249,6 +249,11 @@ INSERT INTO cdl_label VALUES ('Wont fix');
 
 INSERT INTO cdl_language VALUES ('en');
 
+INSERT INTO cdl_settings VALUES ('gitlab', '', true);
+INSERT INTO cdl_settings VALUES ('gitlab_oauth2_application_id', '', true);
+INSERT INTO cdl_settings VALUES ('gitlab_oauth2_secret', '', true);
+INSERT INTO cdl_settings VALUES ('website_url', '', true);
+
 -- DEFAULT ADMINISTRATOR
 -- login: root@partdp.com
 -- password: 123456
