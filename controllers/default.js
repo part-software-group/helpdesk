@@ -15,7 +15,7 @@ exports.install = function () {
     F.route('/*', 'index', ['authorize']);
     F.route('/*', 'login', ['unauthorize']);
     F.route('/auth/gitlab', oauth2_gitlab);
-    F.route('/auth/gitlab/callback', oauth2_gitlab_callback);
+    F.route('/auth/gitlab/callback', oauth2_gitlab_callback, [0]);
     F.route('/logoff', redirect_logoff, ['authorize']);
 
     F.route('/test', function () {
@@ -131,7 +131,14 @@ function oauth2_gitlab_callback() {
         });
 
         function addImageToDatabase(sql, user_id) {
-            sql.writeStream(Request(self.user._json.avatar_url), function (error, oid) {
+            let getImage = Request(self.user._json.avatar_url);
+
+            getImage.on('error',  (error) => {
+                console.error(error);
+                self.redirect('/');
+            });
+
+            sql.writeStream(getImage, function (error, oid) {
                 if (error)
                     return self.json(error);
 
@@ -142,8 +149,8 @@ function oauth2_gitlab_callback() {
                     self.redirect('/');
 
                     if (error) {
-                        console.log(error.items);
-                        setTimeout(() => Lo.create(sql.db).unlink(oid, error => error && console.log(error)), 300);
+                        console.error(error);
+                        setTimeout(() => Lo.create(sql.db).unlink(oid, error => error && console.error(error)), 300);
                     }
                 }, 'updateUserPhoto')
             });
