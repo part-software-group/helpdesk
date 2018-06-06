@@ -4,7 +4,6 @@ NEWSCHEMA('Oauth2').make(function (schema) {
     schema.define('username', 'String', true);
     schema.define('photo', 'String');
     schema.define('email', 'Email', true);
-    schema.define('isadmin', Boolean, true);
     schema.define('iscustomer', Boolean);
 
     schema.setValidate(function (name, value) {
