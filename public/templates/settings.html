@@ -101,12 +101,16 @@
                      data-placeholder="@(e.g. Your gitlab token)" data-jc-type="password" data-jc-value="''"
                      data-maxlength="80">@(Token)
                 </div>
+                <br>
+                <div data-jc="checkbox" data-jc-path="settings.form.gitlabProject.group">@(Just select group)</div>
+                <br>
+                <div data-jc="checkbox" data-jc-path="settings.form.gitlabProject.save">@(Store access token)</div>
             </div>
         </div>
     </div>
     <div data-jc="error" data-jc-path="settings.form.response"></div>
     <div class="ui-form-buttons">
-        <div data-jc="validation" data-jc-path="settings.form.gitlabProject" class="inline">
+        <div data-jc-path="settings.form.gitlabProject" class="inline">
             <button name="submit">@(SUBMIT)</button>
         </div>
         <button name="cancel">@(Cancel)</button>
@@ -211,8 +215,23 @@
     }
 
     function new_gitlab_project() {
+        let token = $('*[data-jc-path="settings.form.gitlabProject.token"]');
+        let save = $('*[data-jc-path="settings.form.gitlabProject.save"]');
+
         $('*[data-id="project-page"]').addClass('hidden');
         SET('settings.form.gitlabProject', {});
+
+        token.removeClass('hidden');
+        save.removeClass('hidden');
+
+        for (let i = 0; i < settings.cache.global.count; i++) {
+            if (settings.cache.global.items[i].name === 'gitlab_access_token') {
+                token.addClass('hidden');
+                save.addClass('hidden');
+                settings.form.gitlabProject.token = '';
+                break;
+            }
+        }
 
         settings.form.gitlabProject.source = 'gitlab';
         SET('common.form', 'gitlabProject');
@@ -250,6 +269,14 @@
 
                 success(true);
                 hide();
+
+                if (settings.form.gitlabProject.token) {
+                    settings.cache.global.count++;
+                    settings.cache.global.items.push({
+                        name: 'gitlab_access_token',
+                        value: '*'.repeat(settings.form.gitlabProject.token.length)
+                    });
+                }
 
                 SET('projects.grid', response);
                 SET('common.form', 'gitlabProjectSelect');
