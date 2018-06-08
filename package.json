@@ -1,7 +1,7 @@
 {
   "name": "HelpDesk",
   "description": "HelpDesk application build on Total.js.",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "release.js",
   "dependencies": {
     "async": "^2.6.0",
