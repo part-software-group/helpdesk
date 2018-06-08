@@ -218,12 +218,12 @@ function json_external_project() {
         }
 
         self.json({
-			count: response.body.length,
+            count: Number(response.body.length),
 			items: projects,
-			pages: response.pages,
-			page: page,
-			limit: response.limit,
-			total: response.total
+            pages: Number(response.pages),
+            page: Number(page),
+            limit: Number(response.limit),
+            total: Number(response.total)
         });
     });
 }
