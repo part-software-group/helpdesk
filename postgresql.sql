@@ -258,9 +258,7 @@ INSERT INTO cdl_settings VALUES ('website_url', '-', true);
 -- login: root@partdp.com
 -- password: 123456
 INSERT INTO tbl_user (id, token, name, language, company, "position", email, password, isadmin, isconfirmed, isnotification, isactivated)
-VALUES ('16072309220001xlu1', '97z8ctkw16tu11tasmin5iefmmijyr', 'root', '', 'partdp', 'Admin',
-                              'root@partdp.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', true, true, true,
-        true);
+VALUES ('16072309220001xlu1', '', 'root', '', 'partdp', 'Admin', 'root@example.com', '7c4a8d09ca3762af61e59520943dc26494f8941b', true, true, true, true);
 
 
 
