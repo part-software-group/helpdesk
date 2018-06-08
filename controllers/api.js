@@ -92,8 +92,9 @@ function json_settings() {
         for (let i = 0; i < response.settings.length; i++) {
             if (response.settings[i].name === 'website_url') {
                 callback_url = `${response.settings[i].value}/auth/gitlab/callback`;
-                break;
-            }
+            } else if (response.settings[i].name === 'gitlab_access_token') {
+                response.settings[i].value = '*'.repeat(response.settings[i].value.length);
+			}
         }
 
         response.settings = response.settings.concat({
@@ -171,13 +172,22 @@ function json_external_project() {
 		builder.first();
     });
 
+    sql.select('token', 'cdl_settings').make(function (builder) {
+        builder.field('value');
+        builder.where('name', 'gitlab_access_token');
+        builder.first();
+    });
+
+    if (self.body.save)
+        sql.query(`INSERT INTO cdl_settings VALUES ('gitlab_access_token', {0})`.format(sql.escape(self.body.token)));
+
     Async.waterfall([
         (callback) => sql.exec((error, response) => callback(error, response)),
         (data, callback) => Request({
             method: 'get',
-            url: `${data.project.value.slice(-1) === '/' ? data.project.value.slice(0, -1) : data.project.value}/api/v4/projects?simple=true&page=${page}&per_page=10`,
+            url: `${data.project.value.slice(-1) === '/' ? data.project.value.slice(0, -1) : data.project.value}/api/v4/${self.body.hasOwnProperty('group') ? `namespaces?` : `projects?simple=true&`}page=${page}&per_page=10`,
             headers: {
-                'private-token': self.body.token
+                'private-token': data.token ? data.token.value : self.body.token
             },
             json: true
         }, (error, response, body) => {
@@ -202,7 +212,7 @@ function json_external_project() {
         for (let i = 0; i < response.body.length; i++) {
             // noinspection JSUnresolvedVariable
             projects.push({
-				name: response.body[i].path_with_namespace,
+				name: self.body.hasOwnProperty('group') ? response.body[i].path : response.body[i].path_with_namespace,
 				source: self.body.source
             });
         }
