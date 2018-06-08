@@ -209,13 +209,25 @@ function json_external_project() {
             return self.invalid().push(error);
 
         let projects = [];
-        for (let i = 0; i < response.body.length; i++) {
-            // noinspection JSUnresolvedVariable
-            projects.push({
-				name: self.body.hasOwnProperty('group') ? response.body[i].path : response.body[i].path_with_namespace,
-				source: self.body.source
-            });
-        }
+        if (self.body.hasOwnProperty('group')) {
+            for (let i = 0; i < response.body.length; i++) {
+            	if (response.body[i].kind !== 'group')
+            		continue;
+
+                projects.push({
+                    name: response.body[i].path,
+                    source: self.body.source
+                });
+            }
+        } else {
+            for (let i = 0; i < response.body.length; i++) {
+                // noinspection JSUnresolvedVariable
+                projects.push({
+                    name: response.body[i].path_with_namespace,
+                    source: self.body.source
+                });
+            }
+		}
 
         self.json({
             count: Number(response.body.length),
