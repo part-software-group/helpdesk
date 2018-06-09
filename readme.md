@@ -12,7 +12,7 @@
 - run `node debug.js`
 
 __Login__:
-- user: `root@partdp.com`
+- user: `root@example.com`
 - password: `123456`
 
 # Gitlab oauth

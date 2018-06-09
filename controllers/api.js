@@ -195,7 +195,7 @@ function json_external_project() {
                 return callback(error);
 
             if (response.statusCode !== 200)
-                return callback(body);
+                return callback(new Error(body.message));
 
             callback(null, {
             	total: response.headers['x-total'],
