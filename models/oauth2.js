@@ -25,7 +25,7 @@ NEWSCHEMA('Oauth2').make(function (schema) {
         let create = !model.id;
 
         sql.save('item', 'tbl_user', create, function (builder, create) {
-            model.isadmin = false;
+            builder.rem('isadmin');
 
             if (create) {
                 model.id = UID();
