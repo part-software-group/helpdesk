@@ -18,12 +18,6 @@ exports.install = function () {
     F.route('/auth/gitlab/callback', oauth2_gitlab_callback, [0]);
     F.route('/logoff', redirect_logoff, ['authorize']);
 
-    F.route('/test', function () {
-        var self = this;
-
-        self.json({ok: self.req.isAuthenticated()});
-    }, ['unauthorize']);
-
     // Files
     F.file('/download/*', file_download);
     F.file('/photos/*.jpg', file_photo);
