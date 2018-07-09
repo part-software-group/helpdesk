@@ -97,9 +97,7 @@ function oauth2_gitlab_callback() {
             name: self.user._json.name,
             username: self.user._json.username,
             email: self.user._json.email,
-            photo: '',
-            isadmin: self.user._json.is_admin,
-            iscustomer: !self.user._json.is_admin
+            photo: ''
         }, function (error, entity) {
             if (error)
                 return self.json(error);
