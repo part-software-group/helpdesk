@@ -114,7 +114,7 @@ CREATE TABLE public.tbl_user_project
 (
   iduser  character varying(30),
   company character varying(50),
-  name    character varying(30)
+  name    character varying(225)
 )
 WITH (
 OIDS = FALSE

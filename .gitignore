@@ -2,6 +2,9 @@
 
 definitions/oauth2.js
 
+storage/temp/*
+!storage/temp/.gitkeep
+
 sftp-config.json
 public/components/*
 logs/
