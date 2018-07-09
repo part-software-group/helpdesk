@@ -3,6 +3,7 @@ services:
   helpdesk_postgres:
     image: postgres:9.6.8-alpine
     container_name: helpdesk_postgres
+    restart: always
     volumes:
       - helpdesk_postgres:/var/lib/postgresql/data
       - $PWD/config:/tmp/config
@@ -14,6 +15,7 @@ services:
   helpdesk_web:
     build: docker
     container_name: helpdesk_web
+    restart: always
     ports:
       - 8000:8000
     links:
@@ -21,7 +23,7 @@ services:
     volumes:
       - $PWD:/app
     working_dir: /app
-    command: sh -c "npm install; node debug.js"
+    command: sh -c "npm install; npm start"
 
 volumes:
   helpdesk_postgres:
