@@ -4,13 +4,15 @@ NEWSCHEMA('User').make(function(schema) {
 	schema.define('photo', 'String(30)');
 	schema.define('name', 'String(50)', true);
 	schema.define('email', 'Email', true);
+    schema.define('password', 'String(30)');
 	schema.define('company', 'String(50)');
 	schema.define('language', 'String(2)');
 	schema.define('notes', 'String(200)');
 	schema.define('minutes', Number);
 	schema.define('position', 'String(50)');
-	schema.define('projects', '[String(30)]');
+	schema.define('projects', '[String(225)]');
 	schema.define('iscustomer', Boolean);
+	schema.define('isconfirmed', Boolean);
 	schema.define('ispriority', Boolean);
 	schema.define('isactivated', Boolean);
 	schema.define('isadmin', Boolean);
@@ -98,6 +100,7 @@ NEWSCHEMA('User').make(function(schema) {
 		sql.exec(function(err, response) {
 			if (err)
 				return callback();
+			response.item.password = '';
 			response.item.projects = response.projects.map(n => n.name);
 			callback(response.item);
 		});
@@ -113,6 +116,8 @@ NEWSCHEMA('User').make(function(schema) {
 		sql.save('item', 'tbl_user', !model.id, function(builder, create) {
 
 			model.search = (model.name + ' ' + model.email + ' ' + model.company).keywords(true, true).join(' ').max(200);
+			if (model.password)
+			    model.password = model.password.sha1();
 
 			if (create) {
 				model.id = UID();
