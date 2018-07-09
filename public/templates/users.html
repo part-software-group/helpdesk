@@ -79,6 +79,8 @@
 					<div class="m" data-jc="textbox" data-jc-path="users.form.name" data-required="true" data-maxlength="50" data-jc-value="''">@(Name)</div>
 					<div data-jc="textbox" data-jc-path="users.form.email" data-maxlength="200" data-jc-type="email" data-required="true" data-jc-value="'@'">@(Email)</div>
 					<div class="help m"><i class="fa fa-envelope mr5"></i>@(HelpDesk will send email with account confirmation.)</div>
+					<div class="m" data-jc="textbox" data-jc-path="users.form.password" data-jc-type="password">@(Password)</div>
+					<div class="help m"><i class="fa fa-warning mr5"></i>@(For change default user password)</div>
 					<div class="m" data-jc="textbox" data-jc-path="users.form.company" data-jc-value="''">@(Company)</div>
 					<div class="m" data-jc="textbox" data-jc-path="users.form.position" data-maxlength="50" data-placeholder="@(e.g. Web developer)" data-jc-value="''">@(Position)</div>
 					<div class="m" data-jc="dropdowncheckbox" data-jc-path="users.form.projects" data-source="common.cdl.projects">@(Projects)</div>
@@ -93,6 +95,7 @@
 
 					<div data-jc="checkbox" data-jc-path="users.form.isadmin" data-jc-value="true" class="b green">@(User is administrator)</div>
 					<div data-jc="checkbox" data-jc-path="users.form.ispriority" data-jc-value="true" class="b">@(Priority support)</div>
+					<div data-jc="checkbox" data-jc-path="users.form.isconfirmed" data-jc-value="true" class="b">@(Confirmed account)</div>
 					<div data-jc="checkbox" data-jc-path="users.form.iscustomer" data-jc-value="true">@(User is customer)</div>
 					<div data-jc="checkbox" data-jc-path="users.form.isactivated" data-jc-value="true">@(Enable access to HelpDesk)</div>
 					<div data-jc="checkbox" data-jc-path="users.form.isnotification" data-jc-value="true">@(Enable notifications)</div>
