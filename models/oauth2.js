@@ -4,7 +4,6 @@ NEWSCHEMA('Oauth2').make(function (schema) {
     schema.define('username', 'String', true);
     schema.define('photo', 'String');
     schema.define('email', 'Email', true);
-    schema.define('iscustomer', Boolean);
 
     schema.setValidate(function (name, value) {
         switch (name) {
@@ -25,13 +24,12 @@ NEWSCHEMA('Oauth2').make(function (schema) {
         let create = !model.id;
 
         sql.save('item', 'tbl_user', create, function (builder, create) {
-            builder.rem('isadmin');
-
             if (create) {
                 model.id = UID();
                 model.isnotification = true;
                 model.isconfirmed = true;
                 model.isactivated = true;
+                model.iscustomer = true;
 
                 builder.set(model);
                 builder.rem('photo');
