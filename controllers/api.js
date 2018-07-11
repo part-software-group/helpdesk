@@ -90,6 +90,7 @@ function json_settings() {
 
         let callback_url = '';
         for (let i = 0; i < response.settings.length; i++) {
+            response.settings[i].is_const = true;
             if (response.settings[i].name === 'website_url') {
                 callback_url = `${response.settings[i].value}/auth/gitlab/callback`;
             } else if (response.settings[i].name === 'gitlab_access_token') {
@@ -100,7 +101,7 @@ function json_settings() {
         response.settings = response.settings.concat({
             name: 'gitlab_oauth2_callback',
             value: callback_url,
-            isconst: true
+            is_const: true
         }).sort(function(a,b) {return (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0);} );
 
         self.json({
@@ -135,6 +136,11 @@ function json_remove_settings(type, name) {
     if (!self.user.isadmin)
         return self.invalid().push('error-privileges');
 
+    if (type === 'global')
+        return self.invalid().push('error-settings-404');
+
+    let sql = DB();
+
     switch (type) {
         case 'global':
             self.type = 'cdl_settings';
@@ -149,8 +155,22 @@ function json_remove_settings(type, name) {
             return self.invalid().push('error-settings-404');
     }
 
-    self.name = name;
-    self.$remove(self, self.callback());
+    self.name = decodeURIComponent(name);
+
+    Async.parallel([
+        (callback) => self.$remove(self, callback),
+        (callback) => {
+            if (type !== 'project')
+                return callback();
+
+            sql.query(`DELETE FROM tbl_user_project where name = {0}`.format(sql.escape(decodeURIComponent(name))));
+            sql.exec(function () {
+                callback();
+            });
+        }
+    ], function () {
+        self.success();
+    });
 }
 
 function json_external_project() {
