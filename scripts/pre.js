@@ -67,22 +67,26 @@ Async.waterfall([
         let updateList;
 
         if (data.updated.length) {
+            let map = {};
+
             // Convert current version to x * 10 ^ 2 + y * 10 ^ 1 + z * 10 ^ 0
             let currentVersion = PackageInfo.version.split('.').reverse().map((v, i) => Number(v) * Math.pow(10, i)).reverse().reduce((n, m) => n + m);
             // Convert array of updated version version to x * 10 ^ 2 + y * 10 ^ 1 + z * 10 ^ 0
-            let updated = data.updated.map((v) => v[1].substr(1).split('.').reverse().map((v, i) => Number(v) * Math.pow(10, i)).reverse().reduce((n, m) => n + m)).sort();
+            let updated = data.updated.map((v) => {
+                let version = v[1].substr(1).split('.').reverse().map((v, i) => Number(v) * Math.pow(10, i)).reverse().reduce((n, m) => n + m);
+                map[version] = v;
+
+                return version;
+            }).sort();
             // Convert queue of update version to x * 10 ^ 2 + y * 10 ^ 1 + z * 10 ^ 0
-            let update = data.update.map((v) => v.substr(1).slice(0, -3).split('.').reverse().map((v, i) => Number(v) * Math.pow(10, i)).reverse().reduce((n, m) => n + m)).filter((v) => v <= currentVersion).sort();
+            let update = data.update.map((v) => {
+                let version = v.substr(1).slice(0, -3).split('.').reverse().map((v, i) => Number(v) * Math.pow(10, i)).reverse().reduce((n, m) => n + m);
+                map[version] = v;
 
-            updateList = update.filter((v) => !updated.includes(v)).map((v) => {
-                let first = v / 100;
-                let second = v / 10;
+                return version;
+            }).filter((v) => v <= currentVersion).sort();
 
-                first = first >= 1 ? `v${first}` : `v0`;
-                second = second.toString().indexOf('.') !== -1 ? `${second}` : `${second}.0`;
-
-                return `${first}.${second}`;
-            });
+            updateList = update.filter((v) => !updated.includes(v)).map((v) => map[v].slice(0, -3));
 
             if (!updateList.length)
                 return callback(null);
