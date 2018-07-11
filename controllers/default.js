@@ -104,28 +104,42 @@ function oauth2_gitlab_callback() {
                     return self.redirect('/');
 
                 let sql = DB();
-                if (user.photo) {
-                    /**
-                     * For connect to pool database
-                     */
-                    sql.query('select 1');
-                    sql.exec(function (error) {
-                        if (error)
-                            return self.json(error);
 
-                        Lo.create(sql.db).unlink(user.photo.split('x')[0], function () {
-                            addImageToDatabase(sql, user.id)
+                /**
+                 * Update project list
+                 */
+                sql.query(`
+                INSERT INTO tbl_user_project (iduser, name) 
+                SELECT '${user.id}', name FROM cdl_project WHERE 
+                (SELECT exists (SELECT * FROM public.cdl_settings WHERE name = 'project_to_register_user' AND value = 'all')) = true
+                AND (SELECT countlogins FROM tbl_user WHERE id = '${user.id}') = 0`);
+                sql.exec(function (error) {
+                    if (error)
+                        return self.json(error);
+
+                    if (user.photo) {
+                        /**
+                         * For connect to pool database
+                         */
+                        sql.query('select 1');
+                        sql.exec(function (error) {
+                            if (error)
+                                return self.json(error);
+
+                            Lo.create(sql.db).unlink(user.photo.split('x')[0], function () {
+                                addImageToDatabase(sql, user.id)
+                            });
                         });
-                    });
-                } else
-                    addImageToDatabase(sql, user.id)
+                    } else
+                        addImageToDatabase(sql, user.id)
+                });
             });
         });
 
         function addImageToDatabase(sql, user_id) {
             let getImage = Request(self.user._json.avatar_url);
 
-            getImage.on('error',  (error) => {
+            getImage.on('error', (error) => {
                 console.error(error);
                 self.redirect('/');
             });
