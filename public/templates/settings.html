@@ -41,8 +41,7 @@
                     {{ if value }}
                     <button name="edit" title="@(Show)"><span class="fa fa-pencil"></span></button>
                     {{ fi }}
-                    <button name="remove" title="@(Remove)"><span class="fa fa-times" {{ if isconst }}
-                                                                  style="display: none;" {{ fi }}></span></button>
+                    <button name="remove" title="@(Remove)" {{ if is_const }} style="display: none;" {{ fi }}><span class="fa fa-times"></span></button>
                 </td>
             </tr>
         </script>
@@ -367,7 +366,10 @@
                             return;
                         SETTER('loading', 'show');
 
-                        AJAX('DELETE /api/settings/{0}/{1}'.format(settings.state[settings.filter.state], obj.name), function () {
+                        AJAX('DELETE /api/settings/{0}/{1}'.format(settings.state[settings.filter.state], encodeURIComponent(obj.name)), function (response) {
+                            if (response instanceof Array)
+                                return SETTER('loading', 'hide');
+
                             EXEC('settings_refresh');
                             SETTER('loading', 'hide');
                         });
