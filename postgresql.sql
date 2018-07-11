@@ -142,7 +142,6 @@ CREATE TABLE public.cdl_settings
 (
   name    character varying(60),
   value   text,
-  isconst boolean DEFAULT false,
   primary key (name)
 )
 WITH (
