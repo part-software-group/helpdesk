@@ -65,9 +65,6 @@ NEWSCHEMA('Settings').make(function (schema) {
 
         sql.delete('rows', controller.type).make(function (builder) {
             builder.where('name', controller.name);
-
-            if (controller.type === 'cdl_settings')
-                builder.where('isconst', false);
         });
 
         sql.exec(function (error, response) {
